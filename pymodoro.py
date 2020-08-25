@@ -30,8 +30,9 @@ def printStatus():
 
 
 def checkInput():
-    """ Loop that gets the input character in the terminal every second"""
-
+    """
+    Loop that gets the input character in the terminal every second.
+    """
     global inputChar
     with t.hidden_cursor():     # Hide cursor
         with t.cbreak():
@@ -39,28 +40,24 @@ def checkInput():
                 inputChar = t.inkey(timeout=1)
 
 
-def tick():
+def loop():
     global timeLeft
-    if timeLeft <= 0:
-        quitPomodoro()
-    else:
+    while timeLeft >= 0 and inputChar.lower() != 'q':
         try:
             printStatus()
             timeLeft -= 1
-            if inputChar.lower() == 'q':
-                quitPomodoro()
-            else:
-                time.sleep(1)
-                tick()
+            time.sleep(1)
         except (KeyboardInterrupt, Exception):
             quitPomodoro()
+    quitPomodoro()
 
-inputThread = threading.Thread(target=checkInput)
-inputThread.daemon = True
 
 def main():
+    inputThread = threading.Thread(target=checkInput)
+    inputThread.daemon = True
+    
     inputThread.start()
-    tick()
+    loop()
 
 if __name__ == "__main__":
     main()
