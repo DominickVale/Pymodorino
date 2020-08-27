@@ -6,6 +6,7 @@ import time
 import threading
 import sys
 import warnings
+from utils import getRemainingTime, minutesToSeconds, printMessage
 
 warnings.filterwarnings('ignore')
 parser = argparse.ArgumentParser()
@@ -17,47 +18,59 @@ args = parser.parse_args()
 inputChar = ''          # Character to be used to eventually stop the program
 t = Terminal()
 
-timeLeft = 60 * args.w
-
+timeLeft = minutesToSeconds(args.w)
+isBreak = False
 
 def quitPomodoro():
     print('\n'*10)
     sys.exit()
 
-def printStatus():
-    print('\n\n')
-    print(t.center("", fillchar="@"))
-    print("@" + t.move_right(t.width) + "@")
-    print(t.center(f"    Time remaining: {t.bold + str(timeLeft)}    ", fillchar="~"))
-    print("@" + t.move_right(t.width) + "@")
-    print(t.center("", fillchar="@"))
-    print("\033[9A")
 
-
-def checkInput():
+def getInput():
     """
-    Loop that gets the input character in the terminal every second.
+    Loop that continuously takes input from the terminal
     """
     global inputChar
     while True:
         inputChar = t.inkey()
 
+def askForConfirmation(message):
+    answer = ""
+    while answer.lower() != "y" and answer.lower() != "n":
+        printMessage(f"{message}(y/n): ", terminal=t)
+        answer = t.inkey(timeout=60)
+    return answer.lower() == "y"
+
 
 def loop():
     global timeLeft
-    with t.cbreak(), t.hidden_cursor():     # Hide cursor
+    global isBreak
+    prefix = "BREAK" if isBreak else "WORKING"
+
+    with t.cbreak(), t.hidden_cursor():
         while timeLeft >= 0 and inputChar.lower() != 'q':
             try:
-                printStatus()
+                printMessage(f"[{prefix}]: Time remaining: {t.bold + getRemainingTime(timeLeft)}", terminal=t)
                 timeLeft -= 1
                 time.sleep(1)
             except (KeyboardInterrupt, Exception):
                 quitPomodoro()
+
+        if(inputChar.lower() != 'q'):
+            if isBreak and askForConfirmation("Start working again?"):
+                isBreak = False
+                timeLeft = minutesToSeconds(args.w)
+                loop()
+                
+            elif askForConfirmation("Time is up. Start break?"):
+                isBreak = True
+                timeLeft = minutesToSeconds(args.b or 5)
+                loop()
         quitPomodoro()
 
 
 def main():
-    inputThread = threading.Thread(target=checkInput)
+    inputThread = threading.Thread(target=getInput)
     inputThread.daemon = True
     
     inputThread.start()
