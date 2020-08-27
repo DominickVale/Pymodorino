@@ -18,3 +18,8 @@ optional arguments:
   -w 25        Working minutes
   -b 5         Break minutes
   ```
+  
+  ### Todo:
+  - Fix cursor bugging out on windows (stays hidden)
+  - Refactor
+  - Add notification sounds
