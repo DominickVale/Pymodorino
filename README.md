@@ -10,9 +10,6 @@ Very early development version. I'm just learning python, please be patient with
 - run `./pymodoro.py`
 
 ```
-positional arguments:
-  start        Start timer
-
 optional arguments:
   -h, --help   show this help message and exit
   -w 25        Working minutes
@@ -20,6 +17,8 @@ optional arguments:
   ```
   
   ### Todo:
-  - Fix cursor bugging out on windows (stays hidden)
+  - fix publishing
   - Refactor
-  - Add notification sounds
+  - Add more notification sounds (different sounds for break and working states)
+  - add some statistics
+  - (?)
