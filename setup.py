@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pymodorino",
-    version="0.0.4",
+    version="0.0.5",
     author="Dominick Vale",
     author_email="dominickveil@gmail.com",
     description="Very simple and cross-platform (hopefully) pomodoro timer script.",
@@ -28,6 +28,6 @@ setup(
     setup_requires=["wheel"],
     install_requires=[
         "blessed",
-        "notifypy"
+        "notify-py"
     ],
 )
