@@ -7,7 +7,7 @@ import sys
 import warnings
 from blessed import Terminal
 from notifypy import Notify
-from utils import getRemainingTime, minutesToSeconds, printMessage
+from utilz import getRemainingTime, minutesToSeconds, printMessage
 
 DEBUG = True
 if not DEBUG:
