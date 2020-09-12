@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pymodorino",
-    version="0.0.13",
+    version="0.0.14",
     author="Dominick Vale",
     author_email="dominickveil@gmail.com",
     description="Very simple and cross-platform (hopefully) pomodoro timer script...",
