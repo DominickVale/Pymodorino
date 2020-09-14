@@ -9,14 +9,14 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pymodorino",
-    version="0.0.14",
+    version="0.0.18",
     author="Dominick Vale",
     author_email="dominickveil@gmail.com",
     description="Very simple and cross-platform (hopefully) pomodoro timer script...",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/DominickVale/Pymodorino",
-    python_requires=">=3.6.0",
+    python_requires=">=3.8.0",
     keywords = ['pomodoro timer', 'pomodoro', 'timer'],
     package_data={"": ["*.png", "*.wav"]},
     packages=find_packages(),

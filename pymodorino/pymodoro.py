@@ -7,28 +7,29 @@ import os
 import warnings
 from blessed import Terminal
 from notifypy import Notify
-from pymodorino.utils import getFormattedTime, minutesToSeconds, printMessage, InputBuffer
-
-DEBUG = False
-if not DEBUG:
-    warnings.filterwarnings('ignore')
+from pymodorino.utils import getFormattedTime, minutesToSeconds, printMessage, InputBuffer, from_package
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-w', type=float, default=25, help='Focus/work minutes. (default: 25m)')
 parser.add_argument('-b', type=float, default=5, help='Break minutes. (default: 5m)')
 parser.add_argument('-s', help='Wav file to use for the notifications. (default: ./oi.wav)')
+parser.add_argument('--debug', type=bool, help='Add logging')
 
 args = parser.parse_args()
+if not args.debug:
+    warnings.filterwarnings('ignore')
+
 t = Terminal()
 
 total_work_time = 0
 total_break_time = 0
+total_idle_time = 0
 
 notification = Notify(
     default_notification_title="Pymodorino timer",
     default_notification_application_name="Pymodorino",
-    default_notification_icon= "./pymodorino/pomodorino.png",
-    default_notification_audio= "./pymodorino/oi.wav"
+    default_notification_icon= from_package("pomodorino.png"),
+    default_notification_audio= from_package("oi.wav")
 )
 
 def sendNotification(message):
@@ -46,9 +47,12 @@ def quitPomodoro():
 def askForConfirmation(message):
     answer = ""
     while answer != "y" and answer != "n":
-        printMessage(f"{message}(y/n): ", terminal=t)
-        answer = t.inkey().lower()
-        if answer == "q":
+        if args.debug:
+            print(message)
+        else:
+            printMessage(f"{message} (y/n): ", terminal=t)
+        answer = t.inkey(0).lower()
+        if answer == "q" or answer == "n":
             quitPomodoro()
 
     return answer == "y"
@@ -75,7 +79,10 @@ class Timer():
         msgPrefix = "BREAK" if self.isBreak else "WORKING"
 
         while self.timeLeft >= 0 and self.running:
-            printMessage(f"[{msgPrefix}]: Time remaining: {t.bold + getFormattedTime(self.timeLeft) + t.normal}", terminal=t)
+            if args.debug:
+                print(f'Time remaining: {getFormattedTime(self.timeLeft)}')
+            else:
+                printMessage(f"[{msgPrefix}]: Time remaining: {t.bold + getFormattedTime(self.timeLeft) + t.normal}", terminal=t)
             self.timeLeft -= 1
             if self.isBreak:
                 total_break_time += 1
@@ -110,7 +117,7 @@ def main():
             timer.stop()
             quitPomodoro()
 
-    inputBuffer = InputBuffer(terminal=t, callback=onPressQuit)
+    inputBuffer = InputBuffer(terminal=t, callback=onPressQuit, debug=args.debug)
     inputBuffer.daemon = True
     inputBuffer.start()
 

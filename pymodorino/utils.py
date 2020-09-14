@@ -1,13 +1,16 @@
 import threading
 import os
-import sys
+from importlib.resources import path
+
 
 def minutesToSeconds(minutes):
     return int(minutes * 60)
 
+
 def getFormattedTime(seconds):
     minutes = seconds // 60
     return f"{minutes}m {seconds - minutes * 60}s"
+
 
 def printMessage(*argv, terminal, withLocation=True):
     t = terminal
@@ -25,15 +28,11 @@ def printMessage(*argv, terminal, withLocation=True):
     else:
         sendFormatted()
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
 
-    return os.path.join(base_path, relative_path)
+def from_package(fileName):
+    with path(__package__, fileName) as filePath:
+        return str(filePath)
+
 
 class InputBuffer(threading.Thread):
     '''
@@ -45,9 +44,10 @@ class InputBuffer(threading.Thread):
     currChar = None
     __running = True
 
-    def __init__(self, callback, terminal):
+    def __init__(self, callback, terminal, debug):
         self.terminal = terminal
         self.callback = callback
+        self.debug = debug
         threading.Thread.__init__(self)
     
     def run(self):
@@ -55,8 +55,12 @@ class InputBuffer(threading.Thread):
         while self.__running:
             self.currChar = self.terminal.inkey(timeout=1)
             self.callback(self.currChar)
+            if self.debug:
+                print(self.currChar)
     def getChar(self):
         return self.currChar
 
     def stop(self):
         self.__running = False
+        if self.debug:
+            print("Stopped InputBuffer")
