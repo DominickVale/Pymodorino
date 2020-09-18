@@ -26,7 +26,6 @@ optional arguments:
   ```
   
   ### Todo:
-  - fix publishing
   - Refactor
   - Add more notification sounds (different sounds for break and working states)
   - add some statistics
