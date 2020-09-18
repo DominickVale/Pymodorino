@@ -26,10 +26,10 @@ or simply:
 
 ```
 optional arguments:
-  -h, --help     show this help message and exit
-  -w W           Focus/work minutes. (default: 25m)
-  -b B           Break minutes. (default: 5m)
-  -s S           Wav file to use for the notifications. (default: ./oi.wav)
+  -h, --help           show this help message and exit
+  -w 25                Focus/work minutes. (default: 25m)
+  -b 5                 Break minutes. (default: 5m)
+  -s './oi.wav'        Wav file to use for the notifications. (default: ./oi.wav)
   ```
   
   ### Todo:
