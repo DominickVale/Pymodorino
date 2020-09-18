@@ -13,8 +13,15 @@ Very early development version. I'm just learning python, please be patient with
 ![Time up](https://i.imgur.com/O1wBDVM.png)
 
 ## How to use
+
+either:
 - Clone the repository
-- run `./pymodoro.py`
+- run `./python -m pymodorino.pymodoro`
+
+or simply:
+- `pip install pymodorino`
+- `pymodorino`
+
 - press 'q' to kill
 
 ```
